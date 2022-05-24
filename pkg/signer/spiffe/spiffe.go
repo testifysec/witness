@@ -17,7 +17,6 @@ package spiffe
 import (
 	"context"
 	"fmt"
-
 	"github.com/spiffe/go-spiffe/v2/workloadapi"
 	"github.com/testifysec/witness/pkg/cryptoutil"
 )
@@ -29,9 +28,12 @@ func (e ErrInvalidSVID) Error() string {
 }
 
 func Signer(ctx context.Context, socketPath string) (cryptoutil.Signer, error) {
-	svidCtx, err := workloadapi.FetchX509Context(ctx, workloadapi.WithAddr(socketPath))
+	svidCtx, err := workloadapi.FetchX509Context(
+		ctx,
+		workloadapi.WithAddr(socketPath),
+	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to fetch x509 context from workload api: %v", err)
 	}
 
 	svid := svidCtx.DefaultSVID()

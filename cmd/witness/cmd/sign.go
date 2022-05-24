@@ -47,13 +47,12 @@ func SignCmd() *cobra.Command {
 //we need to abstract where keys are coming from, etc
 func runSign(so options.SignOptions) error {
 	ctx := context.Background()
-
 	if so.KeyOptions.FulcioURL != "" {
 		err := fmt.Errorf("fulcio url is not supported for signing")
 		return err
 	}
 
-	signers, errors := loadSigners(ctx, so.KeyOptions)
+	signers, errors := loadSigners(ctx, so.KeyOptions, so.SpiffeOptions)
 	if len(errors) > 0 {
 		for _, err := range errors {
 			log.Error(err)

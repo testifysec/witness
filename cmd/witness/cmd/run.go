@@ -18,13 +18,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-
 	"github.com/spf13/cobra"
 	"github.com/testifysec/witness/cmd/witness/options"
 	witness "github.com/testifysec/witness/pkg"
 	"github.com/testifysec/witness/pkg/attestation"
 	"github.com/testifysec/witness/pkg/log"
 	"github.com/testifysec/witness/pkg/rekor"
+	"github.com/testifysec/witness/pkg/sink"
 )
 
 func RunCmd() *cobra.Command {
@@ -46,8 +46,7 @@ func RunCmd() *cobra.Command {
 
 func runRun(ro options.RunOptions, args []string) error {
 	ctx := context.Background()
-
-	signers, errors := loadSigners(ctx, ro.KeyOptions)
+	signers, errors := loadSigners(ctx, ro.KeyOptions, ro.SpiffeOptions)
 	if len(errors) > 0 {
 		for _, err := range errors {
 			log.Error(err)
@@ -119,6 +118,25 @@ func runRun(ro options.RunOptions, args []string) error {
 		}
 
 		log.Infof("Rekor entry added at %v%v\n", rekorServer, resp.Location)
+	}
+
+	sinkServer := ro.CollectorOptions.Server
+	if sinkServer != "" {
+		client, err := sink.NewCollector(
+			sinkServer,
+			ro.CollectorOptions.CACertPath,
+			ro.CollectorOptions.ClientCert,
+			ro.CollectorOptions.ClientKey,
+			ro.SpiffeOptions.Address,
+			ro.SpiffeOptions.TrustedServerId,
+		)
+		if err != nil {
+			return fmt.Errorf("failed to send signed envelope to collector: %v", err)
+		}
+
+		if err = client.Store(string(signedBytes), ctx); err != nil {
+			return fmt.Errorf("failed to send signed envelope to collector: %v", err)
+		}
 	}
 
 	return nil

@@ -25,7 +25,7 @@ import (
 	"github.com/testifysec/witness/pkg/signer/spiffe"
 )
 
-func loadSigners(ctx context.Context, ko options.KeyOptions) ([]cryptoutil.Signer, []error) {
+func loadSigners(ctx context.Context, ko options.KeyOptions, so options.SpiffeOptions) ([]cryptoutil.Signer, []error) {
 	signers := []cryptoutil.Signer{}
 	errors := []error{}
 
@@ -52,8 +52,8 @@ func loadSigners(ctx context.Context, ko options.KeyOptions) ([]cryptoutil.Signe
 	}
 
 	//Load key from spire agent
-	if ko.SpiffePath != "" {
-		spiffeSigner, err := spiffe.Signer(ctx, ko.SpiffePath)
+	if so.Address != "" {
+		spiffeSigner, err := spiffe.Signer(ctx, so.Address)
 		if err != nil {
 			err := fmt.Errorf("failed to create signer from spiffe: %w", err)
 			errors = append(errors, err)

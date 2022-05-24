@@ -96,7 +96,6 @@ func Test_runRunRSACA(t *testing.T) {
 		KeyPath:           leafkey.Name(),
 		CertPath:          leafcert.Name(),
 		IntermediatePaths: intermediateNames,
-		SpiffePath:        "",
 	}
 
 	runOptions := options.RunOptions{
