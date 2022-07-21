@@ -24,6 +24,7 @@ type KeyOptions struct {
 	FulcioURL         string
 	OIDCIssuer        string
 	OIDCClientID      string
+	DelegatedIdentity bool
 }
 
 func (ko *KeyOptions) AddFlags(cmd *cobra.Command) {
@@ -34,4 +35,5 @@ func (ko *KeyOptions) AddFlags(cmd *cobra.Command) {
 	cmd.Flags().StringVar(&ko.FulcioURL, "fulcio", "", "Fulcio address to sign with")
 	cmd.Flags().StringVar(&ko.OIDCIssuer, "fulcio-oidc-issuer", "", "OIDC issuer to use for authentication")
 	cmd.Flags().StringVar(&ko.OIDCClientID, "fulcio-oidc-client-id", "", "OIDC client ID to use for authentication")
+	cmd.Flags().BoolVar(&ko.DelegatedIdentity, "delegated-identity", false, "Use delegated identity for authentication")
 }

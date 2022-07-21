@@ -51,6 +51,16 @@ func Execute() {
 	}
 }
 
+func RunPreRoot(ro *options.RootOptions) error {
+	logger := newLogger()
+	log.SetLogger(logger)
+	if err := logger.SetLevel(ro.LogLevel); err != nil {
+		logger.l.Fatal(err)
+	}
+
+	return nil
+}
+
 func preRoot(cmd *cobra.Command, ro *options.RootOptions) {
 	logger := newLogger()
 	log.SetLogger(logger)

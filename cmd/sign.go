@@ -53,7 +53,7 @@ func runSign(so options.SignOptions) error {
 		return err
 	}
 
-	signers, errors := loadSigners(ctx, so.KeyOptions)
+	signers, errors := loadSigners(ctx, so.KeyOptions, []string{})
 	if len(errors) > 0 {
 		for _, err := range errors {
 			log.Error(err)

@@ -44,10 +44,14 @@ func RunCmd() *cobra.Command {
 	return cmd
 }
 
+func RunRun(ro options.RunOptions, args []string) error {
+	return runRun(ro, args)
+}
+
 func runRun(ro options.RunOptions, args []string) error {
 	ctx := context.Background()
 
-	signers, errors := loadSigners(ctx, ro.KeyOptions)
+	signers, errors := loadSigners(ctx, ro.KeyOptions, args)
 	if len(errors) > 0 {
 		for _, err := range errors {
 			log.Error(err)

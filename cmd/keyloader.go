@@ -25,7 +25,7 @@ import (
 	"github.com/testifysec/witness/options"
 )
 
-func loadSigners(ctx context.Context, ko options.KeyOptions) ([]cryptoutil.Signer, []error) {
+func loadSigners(ctx context.Context, ko options.KeyOptions, args []string) ([]cryptoutil.Signer, []error) {
 	signers := []cryptoutil.Signer{}
 	errors := []error{}
 
@@ -52,10 +52,20 @@ func loadSigners(ctx context.Context, ko options.KeyOptions) ([]cryptoutil.Signe
 	}
 
 	//Load key from spire agent
-	if ko.SpiffePath != "" {
+	if ko.SpiffePath != "" && !ko.DelegatedIdentity {
 		spiffeSigner, err := spiffe.Signer(ctx, ko.SpiffePath)
 		if err != nil {
 			err := fmt.Errorf("failed to create signer from spiffe: %w", err)
+			errors = append(errors, err)
+		} else {
+			signers = append(signers, spiffeSigner)
+		}
+	}
+
+	if ko.DelegatedIdentity && ko.SpiffePath != "" {
+		spiffeSigner, err := spiffe.DelgatedSigner(ctx, ko.SpiffePath+".admin", args[0])
+		if err != nil {
+			err := fmt.Errorf("failed to create delegated signer from spiffe: %w", err)
 			errors = append(errors, err)
 		} else {
 			signers = append(signers, spiffeSigner)

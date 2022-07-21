@@ -53,13 +53,13 @@ func Test_loadSignersKeyPair(t *testing.T) {
 		KeyPath: privatePem.Name(),
 	}
 
-	_, errors := loadSigners(context.Background(), keyOptions)
+	_, errors := loadSigners(context.Background(), keyOptions, []string{})
 	if len(errors) != 0 {
 		t.Errorf("unexpected errors: %v", errors)
 	}
 
 	keyOptions.KeyPath = "not-a-file"
-	_, errors = loadSigners(context.Background(), keyOptions)
+	_, errors = loadSigners(context.Background(), keyOptions, []string{})
 	if len(errors) != 1 {
 		t.Errorf("expected 1 error, got %d", len(errors))
 	}
@@ -76,7 +76,7 @@ func Test_loadSignersCertificate(t *testing.T) {
 		CertPath: leafcert.Name(),
 	}
 
-	signers, errors := loadSigners(context.Background(), keyOptions)
+	signers, errors := loadSigners(context.Background(), keyOptions, []string{})
 	if len(errors) != 0 {
 		t.Errorf("unexpected errors: %v", errors)
 	}
