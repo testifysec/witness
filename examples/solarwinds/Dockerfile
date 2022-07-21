@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.17.8-alpine
+FROM golang:1.17-alpine
 
 WORKDIR /src
 RUN apk --no-cache add git pkgconfig libseccomp-dev gcc musl-dev openssl
